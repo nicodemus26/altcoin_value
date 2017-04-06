@@ -1,0 +1,8 @@
+assets:
+  - symbol: BTC
+    label: My BTC stash!
+    count: 1.2
+  - symbol: LTC
+    count: 34.56
+  - symbol: XMR
+    count: 78.9
