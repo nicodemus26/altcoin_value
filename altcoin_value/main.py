@@ -59,7 +59,7 @@ def main(fiat_symbol=None, yaml_assets=None):
     tickers = dict((t["symbol"], t) for t in ticker_list)
     print("Symbol Total                 Price %3s             Total %3s             Pct Ch 1h             Pct 1d                Pct 1w                Fiat 1h               Fiat 1d               Fiat 1w               Label" % (fiat_symbol, fiat_symbol))
     print("====== ===================== ===================== ===================== ===================== ===================== ===================== ===================== ===================== ===================== =====")
-    total_fiat, fiat_1h, fiat_1d, fiat_1w = decimal.Decimal(0),decimal.Decimal(0),decimal.Decimal(0),decimal.Decimal(0)
+    total_fiat, total_fiat_1h, total_fiat_1d, total_fiat_1w = decimal.Decimal(0),decimal.Decimal(0),decimal.Decimal(0),decimal.Decimal(0)
     for symbol, label in assets.keys():
         total = assets[(symbol, label)]
         if symbol not in tickers:
@@ -77,8 +77,14 @@ def main(fiat_symbol=None, yaml_assets=None):
         total_1h = total*price_1h
         total_1d = total*price_1d
         total_1w = total*price_1w
+        total_fiat = total_fiat + in_fiat
+        total_fiat_1h = total_fiat_1h + total_1h
+        total_fiat_1d = total_fiat_1d + total_1d
+        total_fiat_1w = total_fiat_1w + total_1w
         print("%6s %21s %21s %21s %21s %21s %21s %21s %21s %21s %s" %(
             symbol, total, price, in_fiat, pct_1h*100, pct_1d*100, pct_1w*100, total_1h, total_1d, total_1w, label))
+    print("%6s %21s %21s %21s %21s %21s %21s %21s %21s %21s %s" %(
+        "TOTAL", "N/A", "N/A", total_fiat, (1-(total_fiat-total_fiat_1h)/total_fiat)*100, (1-(total_fiat-total_fiat_1d)/total_fiat)*100, (1-(total_fiat-total_fiat_1w)/total_fiat)*100, total_fiat_1h, total_fiat_1d, total_fiat_1w, ""))
         
         
 
