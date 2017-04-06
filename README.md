@@ -1,5 +1,5 @@
 # Altcoin Value
-Uses data from altcoin websites (currently only coinmarketcap.com) to calculate the value of your personal collection.
+Uses data from altcoin websites (currently only [coinmarketcap.com](coinmarketcap.com)) to calculate the value of your personal collection.
 
 # Installation from source
 1) Clone this repo.
