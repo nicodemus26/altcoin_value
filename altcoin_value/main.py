@@ -83,8 +83,9 @@ def main(fiat_symbol=None, yaml_assets=None):
         total_fiat_1w = total_fiat_1w + total_1w
         print("%6s %21s %21s %21s %21s %21s %21s %21s %21s %21s %s" %(
             symbol, total, price, in_fiat, pct_1h*100, pct_1d*100, pct_1w*100, total_1h, total_1d, total_1w, label))
-    print("%6s %21s %21s %21s %21s %21s %21s %21s %21s %21s %s" %(
-        "TOTAL", "N/A", "N/A", total_fiat, (1-(total_fiat-total_fiat_1h)/total_fiat)*100, (1-(total_fiat-total_fiat_1d)/total_fiat)*100, (1-(total_fiat-total_fiat_1w)/total_fiat)*100, total_fiat_1h, total_fiat_1d, total_fiat_1w, ""))
+    if total_fiat > 0:
+        print("%6s %21s %21s %21s %21s %21s %21s %21s %21s %21s %s" %(
+            "TOTAL", "N/A", "N/A", total_fiat, (1-(total_fiat-total_fiat_1h)/total_fiat)*100, (1-(total_fiat-total_fiat_1d)/total_fiat)*100, (1-(total_fiat-total_fiat_1w)/total_fiat)*100, total_fiat_1h, total_fiat_1d, total_fiat_1w, ""))
         
         
 
