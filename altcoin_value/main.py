@@ -34,6 +34,7 @@ FIAT_SUPPORTED = [
 def main(fiat_symbol=None, yaml_assets=None):
     decimal.getcontext().prec = 19
     params = {}
+    params["limit"] = 0
     assets = collections.defaultdict(decimal.Decimal)
     for assets_fh in yaml_assets:
         vals = yaml.load(assets_fh)
@@ -58,8 +59,9 @@ def main(fiat_symbol=None, yaml_assets=None):
     ticker_list = req.json()
     tickers = dict((t["symbol"], t) for t in ticker_list)
     print("Symbol Total                 Price %3s             Total %3s             Pct Ch 1h             Pct 1d                Pct 1w                Fiat 1h               Fiat 1d               Fiat 1w               Label" % (fiat_symbol, fiat_symbol))
-    print("====== ===================== ===================== ===================== ===================== ===================== ===================== ===================== ===================== ===================== =====")
+    print("====== ===================== ===================== ===================== ===================== ===================== ===================== ===================== ===================== =====================")
     total_fiat, total_fiat_1h, total_fiat_1d, total_fiat_1w = decimal.Decimal(0),decimal.Decimal(0),decimal.Decimal(0),decimal.Decimal(0)
+    rows = []
     for symbol, label in assets.keys():
         total = assets[(symbol, label)]
         if symbol not in tickers:
@@ -81,11 +83,27 @@ def main(fiat_symbol=None, yaml_assets=None):
         total_fiat_1h = total_fiat_1h + total_1h
         total_fiat_1d = total_fiat_1d + total_1d
         total_fiat_1w = total_fiat_1w + total_1w
+        nums = {
+            "symbol": symbol,
+            "total": total,
+            "price": price,
+            "in_fiat": in_fiat,
+            "pct_1h": pct_1h,
+            "pct_1d": pct_1d,
+            "pct_1w": pct_1w,
+            "total_1h": total_1h,
+            "total_1d": total_1d,
+            "total_1w": total_1w,
+            "label": label,
+        }
+        rows.append(nums)
+    sorted_rows = [y for x, y in sorted([(0-nums["in_fiat"], nums) for nums in rows])]
+    for row in sorted_rows:
         print("%6s %21s %21s %21s %21s %21s %21s %21s %21s %21s %s" %(
-            symbol, total, price, in_fiat, pct_1h*100, pct_1d*100, pct_1w*100, total_1h, total_1d, total_1w, label))
+            row["symbol"], row["total"], row["price"], row["in_fiat"].quantize(decimal.Decimal('.01'), rounding=decimal.ROUND_DOWN), row["pct_1h"]*100, row["pct_1d"]*100, row["pct_1w"]*100, row["total_1h"], row["total_1d"], row["total_1w"], row["label"]))
     if total_fiat > 0:
         print("%6s %21s %21s %21s %21s %21s %21s %21s %21s %21s %s" %(
-            "TOTAL", "N/A", "N/A", total_fiat, (1-(total_fiat-total_fiat_1h)/total_fiat)*100, (1-(total_fiat-total_fiat_1d)/total_fiat)*100, (1-(total_fiat-total_fiat_1w)/total_fiat)*100, total_fiat_1h, total_fiat_1d, total_fiat_1w, ""))
+            "TOTAL", "N/A", "N/A", total_fiat.quantize(decimal.Decimal('.01'), rounding=decimal.ROUND_DOWN), (1-(total_fiat-total_fiat_1h)/total_fiat)*100, (1-(total_fiat-total_fiat_1d)/total_fiat)*100, (1-(total_fiat-total_fiat_1w)/total_fiat)*100, total_fiat_1h, total_fiat_1d, total_fiat_1w, ""))
         
         
 
